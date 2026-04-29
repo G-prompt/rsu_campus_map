@@ -1,0 +1,530 @@
+/* --- MONOCHROME PALETTE OVERRIDES --- */
+body,
+html,
+#root {
+    background: #fff !important;
+    color: #111 !important;
+}
+
+.app-shell,
+.panel,
+.preview,
+.hero,
+.update-card,
+.location-card,
+.controls select,
+.toggle-button,
+.toggle-pill,
+.toggle-pill.active,
+.status-chip,
+.map-info-box {
+    background: #fff !important;
+    color: #111 !important;
+    border-color: #bbb !important;
+}
+
+.hero .primary,
+.toggle-pill.active {
+    background: #111 !important;
+    color: #fff !important;
+    border-color: #111 !important;
+}
+
+.location-card:hover,
+.location-card.active {
+    border-color: #111 !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10) !important;
+}
+
+.update-badge,
+.status-chip {
+    background: #eee !important;
+    color: #111 !important;
+}
+
+.panel-top p,
+.update-card p,
+.map-info-box p,
+.location-card p,
+.location-coords,
+.map-hint,
+.update-meta,
+.location-count {
+    color: #444 !important;
+}
+
+.map-view,
+.preview-image img {
+    filter: grayscale(1) contrast(1.1) !important;
+}
+
+:root {
+    color-scheme: dark;
+    color: #111;
+    background: #f7f8fc;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body,
+html,
+#root {
+    margin: 0;
+    min-height: 100vh;
+}
+
+button,
+select {
+    font: inherit;
+}
+
+.app-shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    padding: 24px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .08);
+}
+
+.hero h1 {
+    margin: 0 0 8px;
+    font-size: clamp(2rem, 2.6vw, 3rem);
+}
+
+.hero p {
+    margin: 0;
+    color: #5b6174;
+}
+
+.hero .primary {
+    padding: 14px 22px;
+    border-radius: 999px;
+    border: none;
+    background: #1a73e8;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.panel,
+.preview {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .06);
+}
+
+.panel-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.panel-top h2 {
+    margin: 0 0 8px;
+}
+
+.panel-top p {
+    margin: 0;
+    color: #475569;
+}
+
+.toggle-button {
+    border: none;
+    background: #eef2ff;
+    color: #1d4ed8;
+    padding: 12px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.update-grid {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.update-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 18px;
+    background: #ffffff;
+}
+
+.update-badge {
+    display: inline-flex;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.update-card h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+}
+
+.update-card p {
+    margin: 0 0 12px;
+    color: #475569;
+}
+
+.update-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.controls label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 600;
+}
+
+.controls select {
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e3e6ee;
+    min-width: 170px;
+}
+
+.search-row {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    width: 100%;
+    min-width: 240px;
+    border-radius: 14px;
+    border: 1px solid #e3e6ee;
+    padding: 12px 14px;
+    margin-top: 8px;
+    outline: none;
+}
+
+.location-count {
+    color: #475569;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.location-list {
+    display: grid;
+    gap: 16px;
+}
+
+.location-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 18px;
+    border: 1px solid #e3e6ee;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.location-card:hover,
+.location-card.active {
+    border-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.08);
+}
+
+.location-card strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1rem;
+}
+
+.location-card span {
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.location-card p {
+    margin: 12px 0 0;
+    color: #64748b;
+}
+
+.location-coords {
+    margin: 10px 0 0;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.location-card img {
+    width: 100%;
+    margin-top: 14px;
+    border-radius: 16px;
+    object-fit: cover;
+    height: 140px;
+}
+
+.preview-image {
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 18px 0;
+}
+
+.preview-image img {
+    width: 100%;
+    display: block;
+    height: 240px;
+    object-fit: cover;
+}
+
+.view-toggle-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.toggle-pill {
+    border: 1px solid #d1d5db;
+    background: #f8fafc;
+    color: #334155;
+    padding: 10px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.toggle-pill.active {
+    background: #1d4ed8;
+    color: white;
+    border-color: #1d4ed8;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.preview h2 {
+    margin-top: 0;
+}
+
+.preview .meta {
+    margin: 6px 0 18px;
+    color: #5b6174;
+}
+
+.status-chip {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #1d4ed8;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.map-view {
+    position: relative;
+    min-height: 360px;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #eef2ff;
+    margin-top: 18px;
+}
+
+.map-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #334155;
+    text-align: center;
+    font-weight: 700;
+    z-index: 10;
+}
+
+.map-info-row {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.map-info-box {
+    padding: 16px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.map-info-box strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.map-info-box p {
+    margin: 0;
+    color: #475569;
+}
+
+.map-hint {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .app-shell {
+        padding: 12px;
+    }
+
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 10px;
+    }
+
+    .panel,
+    .preview {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .panel-top {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .preview-image img {
+        height: 160px;
+    }
+
+    .map-view {
+        min-height: 220px;
+        border-radius: 16px;
+    }
+
+    .location-card img {
+        height: 90px;
+        border-radius: 10px;
+    }
+
+    .toggle-button,
+    .toggle-pill {
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-shell {
+        padding: 4px;
+    }
+
+    .hero {
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .panel,
+    .preview {
+        padding: 6px;
+        border-radius: 8px;
+    }
+
+    .preview-image img {
+        height: 100px;
+    }
+
+    .map-view {
+        min-height: 120px;
+        border-radius: 8px;
+    }
+
+    .location-card img {
+        height: 60px;
+        border-radius: 6px;
+    }
+
+    .toggle-button,
+    .toggle-pill {
+        padding: 7px 8px;
+        font-size: 0.95rem;
+    }
+
+    .hero h1 {
+        font-size: 1.1rem;
+    }
+
+    .search-input,
+    .controls select {
+        font-size: 0.95rem;
+        padding: 8px 8px;
+    }
+
+    .location-card {
+        padding: 8px;
+        border-radius: 8px;
+    }
+}
