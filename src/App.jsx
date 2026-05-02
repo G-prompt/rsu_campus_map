@@ -198,6 +198,8 @@ function App() {
     const [customRoute, setCustomRoute] = useState([]); // [{lat, lng}]
     // Help modal
     const [showHelp, setShowHelp] = useState(false);
+    // Map modal state
+    const [showMapModal, setShowMapModal] = useState(false);
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const markersRef = useRef({});
@@ -397,9 +399,12 @@ function App() {
     const mapSectionRef = useRef(null);
 
     const handleExploreClick = () => {
-        if (mapSectionRef.current) {
-            mapSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        setShowMapModal(true);
+    };
+
+    // For floating map button
+    const handleFloatingMapClick = () => {
+        setShowMapModal(true);
     };
 
     // Pin modal handlers
@@ -431,301 +436,206 @@ function App() {
     };
     // Share pin handler
     const handleCopyShare = (code) => {
-        navigator.clipboard.writeText(window.location.href + '?pin=' + code);
-        alert('Share link copied!');
+        if (navigator && navigator.clipboard) {
+            navigator.clipboard.writeText(code);
+        }
     };
-
-    // Expose copyPin for popup button
-    useEffect(() => {
-        window.copyPin = handleCopyShare;
-        return () => { delete window.copyPin; };
-    }, []);
-
-    if (loading) {
-        // Simple campus map style loader animation
-        return (
-            <div style={{
-                minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fff', color: '#222'
-            }}>
-                <svg width="120" height="120" viewBox="0 0 120 120" style={{ marginBottom: 24 }}>
-                    <circle cx="60" cy="60" r="50" stroke="#222" strokeWidth="4" fill="none" opacity="0.2" />
-                    <path d="M60 20 Q80 60 60 100 Q40 60 60 20 Z" fill="#222" opacity="0.12">
-                        <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="1.2s" repeatCount="indefinite" />
-                    </path>
-                    <circle cx="60" cy="60" r="32" stroke="#222" strokeWidth="2" fill="none" opacity="0.12" />
-                </svg>
-                <div style={{ fontWeight: 700, fontSize: '1.2em', marginBottom: 8 }}>Loading Campus Map…</div>
-                <div style={{ color: '#666', fontSize: '1em' }}>Please wait</div>
-            </div>
-        );
-    }
 
     return (
         <div className="app-shell">
+            {/* Header */}
             <header className="hero">
                 <div>
-                    <h1>RSU Smart Campus Map</h1>
-                    <p>Interactive campus navigation with quick updates, event highlights, and route previews.</p>
+                    <h1>RSU Campus Map</h1>
+                    <p>Find locations, events, and updates across campus.</p>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="primary" onClick={handleExploreClick}>Explore campus</button>
-                    <button className="toggle-button" title="Help" onClick={() => setShowHelp(true)}>?</button>
+                <div style={{ display: 'flex', gap: 12 }}>
+                    <button className="primary" onClick={handleExploreClick}>Explore Map</button>
+                    <button className="primary" style={{ background: 'var(--rsu-blue-light)' }} onClick={() => setShowHelp(true)}>Help</button>
                 </div>
             </header>
 
-            <main className="layout" ref={mapSectionRef}>
-                <section className="panel">
-                    <div style={{ marginBottom: 12, display: 'flex', gap: 8 }}>
-                        <button className="toggle-button" onClick={() => {
-                            setShowPinModal(true);
-                            setPinForm({ ...pinForm, lat: selectedLocation.latitude, lng: selectedLocation.longitude });
-                        }}>Pin this location</button>
-                        <button className="toggle-button" onClick={() => setRouteMode((v) => !v)} style={{ background: routeMode ? '#10b981' : undefined, color: routeMode ? '#fff' : undefined }}>{routeMode ? 'Finish Route' : 'Custom Route'}</button>
-                        <button className="toggle-button" onClick={() => { setCustomRoute([]); setRouteMode(false); }}>Clear Route</button>
-                        <button className="toggle-button" onClick={() => setPins([])}>Clear Pins</button>
+            {/* Floating map button */}
+            <button
+                className="floating-map-btn"
+                title="Open Campus Map"
+                onClick={handleFloatingMapClick}
+            >
+                <span role="img" aria-label="Map">🗺️</span>
+            </button>
+
+            {/* Pin Modal */}
+            {showPinModal && (
+                <div className="map-modal-overlay" onClick={e => { if (e.target.className === 'map-modal-overlay') setShowPinModal(false); }}>
+                    <div className="map-modal-content" style={{ maxWidth: 400, minWidth: 320, minHeight: 0, padding: 32 }}>
+                        <button style={{ position: 'absolute', top: 18, right: 18, background: 'var(--rsu-blue)', color: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 22, cursor: 'pointer', zIndex: 10 }} title="Close" onClick={() => setShowPinModal(false)}>×</button>
+                        <h2>Pin a Location</h2>
+                        <form onSubmit={handlePinSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            <input name="title" placeholder="Title" value={pinForm.title} onChange={handlePinFormChange} required style={{ padding: 10, borderRadius: 8, border: '1px solid var(--rsu-blue-light)' }} />
+                            <input name="course" placeholder="Course (optional)" value={pinForm.course} onChange={handlePinFormChange} style={{ padding: 10, borderRadius: 8, border: '1px solid var(--rsu-blue-light)' }} />
+                            <input name="duration" type="number" min={1} max={120} placeholder="Duration (minutes)" value={pinForm.duration} onChange={handlePinFormChange} style={{ padding: 10, borderRadius: 8, border: '1px solid var(--rsu-blue-light)' }} />
+                            <button className="primary" type="submit">Pin</button>
+                        </form>
                     </div>
+                </div>
+            )}
+
+            {/* Share Modal */}
+            {sharePin && (
+                <div className="map-modal-overlay" onClick={e => { if (e.target.className === 'map-modal-overlay') setSharePin(null); }}>
+                    <div className="map-modal-content" style={{ maxWidth: 400, minWidth: 320, minHeight: 0, padding: 32 }}>
+                        <button style={{ position: 'absolute', top: 18, right: 18, background: 'var(--rsu-blue)', color: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 22, cursor: 'pointer', zIndex: 10 }} title="Close" onClick={() => setSharePin(null)}>×</button>
+                        <h2>Share Pin</h2>
+                        <div style={{ marginBottom: 16 }}>Share code: <strong>{sharePin.shareCode}</strong></div>
+                        <button className="primary" onClick={() => { navigator.clipboard.writeText(sharePin.shareCode); }}>Copy Code</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Help Modal */}
+            {showHelp && (
+                <div className="map-modal-overlay" onClick={e => { if (e.target.className === 'map-modal-overlay') setShowHelp(false); }}>
+                    <div className="map-modal-content" style={{ maxWidth: 500, minWidth: 320, minHeight: 0, padding: 32 }}>
+                        <button style={{ position: 'absolute', top: 18, right: 18, background: 'var(--rsu-blue)', color: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 22, cursor: 'pointer', zIndex: 10 }} title="Close" onClick={() => setShowHelp(false)}>×</button>
+                        <h2>How to Use</h2>
+                        <ul style={{ lineHeight: 1.7 }}>
+                            <li>Browse and search for campus locations.</li>
+                            <li>Click a location to view details and map.</li>
+                            <li>Pin a location by clicking on the map or using the Pin button.</li>
+                            <li>Share a pin with others using the share code.</li>
+                            <li>Toggle event markers and custom routes.</li>
+                        </ul>
+                    </div>
+                </div>
+            )}
+
+            {/* Map Modal */}
+            {showMapModal && (
+                <div className="map-modal-overlay" onClick={(e) => { if (e.target.className === 'map-modal-overlay') setShowMapModal(false); }}>
+                    <div className="map-modal-content">
+                        <button style={{ position: 'absolute', top: 18, right: 18, background: 'var(--rsu-blue)', color: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 22, cursor: 'pointer', zIndex: 10 }} title="Close Map" onClick={() => setShowMapModal(false)}>×</button>
+                        <main className="layout" ref={mapSectionRef} style={{ flex: 1, overflow: 'auto', padding: 24 }}>
+                            <section className="panel">
+                                {/* Panel content in modal */}
+                                {/* ...copy the panel section code here... */}
+                            </section>
+                            <section className="preview">
+                                {/* Preview content in modal */}
+                                {/* ...copy the preview section code here... */}
+                            </section>
+                        </main>
+                    </div>
+                </div>
+            )}
+
+            {/* Main layout always visible */}
+            <main className="layout">
+                <section className="panel">
                     <div className="panel-top">
                         <div>
-                            <h2>Campus updates</h2>
-                            <p>Live notices and event markers for students and visitors.</p>
+                            <h2>Locations</h2>
+                            <p>Browse all campus locations and filter by category.</p>
                         </div>
-                        <button className="toggle-button" onClick={() => setShowEventLayer((value) => !value)}>
-                            {showEventLayer ? 'Hide event layer' : 'Show event layer'}
-                        </button>
-                    </div>
-
-                    {/* Demo updates removed for clarity. Pins are now the main focus. */}
-                    <div className="update-grid">
-                        {pins.length === 0 && (
-                            <div style={{ color: '#888', fontStyle: 'italic', padding: 8 }}>No pins yet. Pin a location to share or add a course!</div>
-                        )}
-                        {pins.map((pin) => (
-                            <article key={pin.id} className="update-card">
-                                <div className="update-badge">{pin.course || 'PIN'}</div>
-                                <h3>{pin.title || 'Pinned location'}</h3>
-                                <p>Lat {pin.lat.toFixed(6)}, Lng {pin.lng.toFixed(6)}</p>
-                                <div className="update-meta">
-                                    {pin.expiresAt && <span>Expires {new Date(pin.expiresAt).toLocaleTimeString()}</span>}
-                                    <button className="toggle-button" style={{ marginLeft: 8 }} onClick={() => handleCopyShare(pin.shareCode)}>Share</button>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                    {/* Pin modal */}
-                    {showPinModal && (
-                        <div style={{
-                            position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            <form style={{ background: '#fff', padding: 24, borderRadius: 16, minWidth: 280, maxWidth: 340 }} onSubmit={handlePinSubmit}>
-                                <h3>Pin a location</h3>
-                                <label style={{ display: 'block', marginBottom: 8 }}>
-                                    Title (optional)
-                                    <input name="title" value={pinForm.title} onChange={handlePinFormChange} style={{ width: '100%', marginTop: 4, marginBottom: 8 }} />
-                                </label>
-                                <label style={{ display: 'block', marginBottom: 8 }}>
-                                    Course (optional)
-                                    <input name="course" value={pinForm.course} onChange={handlePinFormChange} style={{ width: '100%', marginTop: 4, marginBottom: 8 }} />
-                                </label>
-                                <label style={{ display: 'block', marginBottom: 8 }}>
-                                    Duration (minutes)
-                                    <input name="duration" type="number" min="1" max="240" value={pinForm.duration} onChange={handlePinFormChange} style={{ width: '100%', marginTop: 4, marginBottom: 8 }} />
-                                </label>
-                                <div style={{ fontSize: '0.95em', color: '#555', marginBottom: 8 }}>
-                                    Pin will expire after this duration.
-                                </div>
-                                <div style={{ display: 'flex', gap: 12 }}>
-                                    <button className="primary" type="submit">Pin</button>
-                                    <button className="toggle-button" type="button" onClick={() => setShowPinModal(false)}>Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-                    )}
-
-                    {/* Share modal */}
-                    {/* Help modal */}
-                    {showHelp && (
-                        <div style={{
-                            position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 2000,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            <div style={{ background: '#fff', padding: 28, borderRadius: 18, minWidth: 320, maxWidth: 420, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
-                                <h2>How to use the Campus Map</h2>
-                                <ul style={{ fontSize: '1.05em', margin: '18px 0 18px 0', paddingLeft: 18 }}>
-                                    <li><b>Explore:</b> Use the search and filter to find campus locations.</li>
-                                    <li><b>Pin:</b> Click "Pin this location" or click anywhere on the map to add a pin. Add a course, title, and duration if you wish.</li>
-                                    <li><b>Share:</b> After pinning, copy the share link to invite others to the same spot.</li>
-                                    <li><b>Route:</b> Click "Custom Route" then click points on the map to build a walking path. Click "Finish Route" to stop adding points. "Clear Route" removes the custom path.</li>
-                                    <li><b>Event Layer:</b> Toggle event markers on/off.</li>
-                                    <li><b>Clear Pins:</b> Remove all pins at once.</li>
-                                </ul>
-                                <button className="primary" onClick={() => setShowHelp(false)}>Close</button>
-                            </div>
-                        </div>
-                    )}
-                    {sharePin && (
-                        <div style={{
-                            position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            <div style={{ background: '#fff', padding: 24, borderRadius: 16, minWidth: 280, maxWidth: 340 }}>
-                                <h3>Share this pin</h3>
-                                <div style={{ wordBreak: 'break-all', marginBottom: 12 }}>
-                                    <strong>Link:</strong><br />
-                                    <span>{window.location.href + '?pin=' + sharePin.shareCode}</span>
-                                </div>
-                                <button className="primary" onClick={() => { handleCopyShare(sharePin.shareCode); setSharePin(null); }}>Copy link & close</button>
-                                <button className="toggle-button" style={{ marginLeft: 8 }} onClick={() => setSharePin(null)}>Close</button>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="search-row">
-                        <label>
-                            Search places
-                            <input
-                                className="search-input"
-                                type="search"
-                                placeholder="Search by name, category, or keyword"
-                                value={searchQuery}
-                                onChange={(event) => setSearchQuery(event.target.value)}
-                            />
-                        </label>
-                        <div className="filter-row">
+                        <div className="controls">
                             <label>
-                                Category filter
-                                <select value={filter} onChange={(event) => setFilter(event.target.value)}>
-                                    {categories.map((category) => (
-                                        <option key={category} value={category}>{category}</option>
+                                Category:
+                                <select value={filter} onChange={e => setFilter(e.target.value)}>
+                                    {categories.map(cat => (
+                                        <option key={cat} value={cat}>{cat}</option>
                                     ))}
                                 </select>
                             </label>
-                            <span className="location-count">{filteredLocations.length} place{filteredLocations.length === 1 ? '' : 's'} shown</span>
                         </div>
                     </div>
-
+                    <div className="search-row">
+                        <input
+                            className="search-input"
+                            type="text"
+                            placeholder="Search locations..."
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                        <button className="toggle-button" onClick={() => setShowPinModal(true)}>Pin Location</button>
+                        <button className={`toggle-button${showEventLayer ? ' active' : ''}`} onClick={() => setShowEventLayer(v => !v)}>{showEventLayer ? 'Hide Events' : 'Show Events'}</button>
+                        <button className={`toggle-button${routeMode ? ' active' : ''}`} onClick={() => setRouteMode(v => !v)}>{routeMode ? 'Exit Route Mode' : 'Custom Route'}</button>
+                    </div>
+                    <div className="location-count">{filteredLocations.length} locations found</div>
                     <div className="location-list">
-                        {filteredLocations.map((location) => (
-                            <button
-                                key={location.id}
-                                className={location.id === selectedLocation.id ? 'location-card active' : 'location-card'}
-                                onClick={() => setSelectedLocation(location)}
+                        {filteredLocations.map(loc => (
+                            <div
+                                key={loc.id}
+                                className={`location-card${selectedLocation.id === loc.id ? ' active' : ''}`}
+                                onClick={() => setSelectedLocation(loc)}
                             >
-                                <div>
-                                    <strong>{location.name}</strong>
-                                    <span>{location.category}</span>
+                                <strong>{loc.name}</strong>
+                                <span>{loc.category}</span>
+                                <p>{loc.description}</p>
+                                <div className="location-coords">
+                                    Lat: {loc.latitude}, Lng: {loc.longitude}
                                 </div>
-                                <p>{location.description}</p>
-                                <p className="location-coords">Lat {location.latitude.toFixed(6)}, Lng {location.longitude.toFixed(6)}</p>
-                                <img src={location.imageUrl} alt={location.name} />
-                            </button>
+                                <img src={loc.imageUrl} alt={loc.name + ' exterior'} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="update-grid">
+                        {activeUpdates.map(update => (
+                            <div className="update-card" key={update.id}>
+                                <div className="update-badge">{update.courseCode}</div>
+                                <h3>{update.title}</h3>
+                                <p>{update.description}</p>
+                                <div className="update-meta">
+                                    <span>{update.faculty}</span>
+                                    <span>{update.level}</span>
+                                    <span>Expires: {update.expiresAt}</span>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </section>
-
                 <section className="preview">
                     <div className="preview-header">
-                        <div>
-                            <h2>{selectedLocation.name}</h2>
-                            <p className="meta">Category: {selectedLocation.category}</p>
-                            <p className="meta">Lat {selectedLocation.latitude.toFixed(6)} · Lng {selectedLocation.longitude.toFixed(6)}</p>
-                        </div>
-                        <span className="status-chip">Campus map</span>
+                        <h2>{selectedLocation.name}</h2>
+                        <span className="status-chip">{selectedLocation.category}</span>
                     </div>
-
-                    <div className="view-toggle-row">
-                        {['Exterior', 'Interior'].map((mode) => (
-                            <button
-                                type="button"
-                                key={mode}
-                                className={viewMode === mode ? 'toggle-pill active' : 'toggle-pill'}
-                                onClick={() => setViewMode(mode)}
-                            >
-                                {mode}
-                            </button>
-                        ))}
-                    </div>
-
+                    <div className="meta">{selectedLocation.description}</div>
                     <div className="preview-image">
-                        <img src={viewMode === 'Interior' ? selectedLocation.insideImageUrl || selectedLocation.imageUrl : selectedLocation.imageUrl} alt={`${selectedLocation.name} ${viewMode}`} />
+                        <img src={viewMode === 'Exterior' ? selectedLocation.imageUrl : selectedLocation.insideImageUrl} alt={selectedLocation.name + ' view'} />
                     </div>
-
-                    <p>{selectedLocation.description}</p>
-
-                    <div className="map-view" ref={mapContainerRef}>
+                    <div className="view-toggle-row">
+                        <button
+                            className={`toggle-pill${viewMode === 'Exterior' ? ' active' : ''}`}
+                            onClick={() => setViewMode('Exterior')}
+                        >
+                            Exterior
+                        </button>
+                        <button
+                            className={`toggle-pill${viewMode === 'Interior' ? ' active' : ''}`}
+                            onClick={() => setViewMode('Interior')}
+                        >
+                            Interior
+                        </button>
+                    </div>
+                    <div className="map-view" style={{ marginTop: 18 }}>
+                        <div ref={mapContainerRef} style={{ width: '100%', height: 360, borderRadius: 24, minHeight: 220 }} />
                         {tileError && (
-                            <div className="map-fallback">
-                                <div style={{ fontWeight: 700, color: '#b91c1c', marginBottom: 8 }}>Map failed to load.</div>
-                                <div style={{ color: '#555' }}>Check your internet connection or try again later.<br />You can still use the location list and route preview.</div>
-                            </div>
+                            <div className="map-fallback">Map failed to load. Please check your connection.</div>
                         )}
                     </div>
-
                     <div className="map-info-row">
                         <div className="map-info-box">
-                            <strong>Route demo</strong>
-                            <p>Path from Senate Building to the selected location.</p>
+                            <strong>Coordinates</strong>
+                            <p>Lat: {selectedLocation.latitude}, Lng: {selectedLocation.longitude}</p>
                         </div>
                         <div className="map-info-box">
-                            <strong>Event layer</strong>
-                            <p>{showEventLayer ? 'Active' : 'Hidden'}</p>
+                            <strong>Path</strong>
+                            <p>{selectedLocation.pathCoordinates.map(([lat, lng]) => `(${lat}, ${lng})`).join(' → ')}</p>
                         </div>
                     </div>
-
-                    <p className="map-hint">Use the campus list to jump to a location and preview a walking route.</p>
                 </section>
             </main>
-
-            {/* Pin modal */}
-            {showPinModal && (
-                <div style={{
-                    position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                    <form style={{ background: '#fff', padding: 24, borderRadius: 16, minWidth: 280, maxWidth: 340 }} onSubmit={handlePinSubmit}>
-                        <h3>Pin a location</h3>
-                        <label style={{ display: 'block', marginBottom: 8 }}>
-                            Title (optional)
-                            <input name="title" value={pinForm.title} onChange={handlePinFormChange} style={{ width: '100%', marginTop: 4, marginBottom: 8 }} />
-                        </label>
-                        <label style={{ display: 'block', marginBottom: 8 }}>
-                            Course (optional)
-                            <input name="course" value={pinForm.course} onChange={handlePinFormChange} style={{ width: '100%', marginTop: 4, marginBottom: 8 }} />
-                        </label>
-                        <label style={{ display: 'block', marginBottom: 8 }}>
-                            Duration (minutes)
-                            <input name="duration" type="number" min="1" max="240" value={pinForm.duration} onChange={handlePinFormChange} style={{ width: '100%', marginTop: 4, marginBottom: 8 }} />
-                        </label>
-                        <div style={{ fontSize: '0.95em', color: '#555', marginBottom: 8 }}>
-                            Pin will expire after this duration.
-                        </div>
-                        <div style={{ display: 'flex', gap: 12 }}>
-                            <button className="primary" type="submit">Pin</button>
-                            <button className="toggle-button" type="button" onClick={() => setShowPinModal(false)}>Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            )}
-
-            {/* Share modal */}
-            {sharePin && (
-                <div style={{
-                    position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                    <div style={{ background: '#fff', padding: 24, borderRadius: 16, minWidth: 280, maxWidth: 340 }}>
-                        <h3>Share this pin</h3>
-                        <div style={{ wordBreak: 'break-all', marginBottom: 12 }}>
-                            <strong>Link:</strong><br />
-                            <span>{window.location.href + '?pin=' + sharePin.shareCode}</span>
-                        </div>
-                        <button className="primary" onClick={() => { handleCopyShare(sharePin.shareCode); setSharePin(null); }}>Copy link & close</button>
-                        <button className="toggle-button" style={{ marginLeft: 8 }} onClick={() => setSharePin(null)}>Close</button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
-
 export default App;

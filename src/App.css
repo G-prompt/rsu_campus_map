@@ -1,9 +1,22 @@
-/* --- MONOCHROME PALETTE OVERRIDES --- */
+/* --- RSU Blue Palette --- */
+:root {
+    --rsu-blue: #1d4ed8;
+    --rsu-blue-dark: #1742b0;
+    --rsu-blue-light: #3b82f6;
+    --rsu-accent: #0369a1;
+    --rsu-bg: #eef2ff;
+    --rsu-card: #fff;
+    --rsu-border: #dbeafe;
+    --rsu-text: #1e293b;
+    --rsu-muted: #64748b;
+    --rsu-shadow: 0 24px 80px rgba(29, 78, 216, 0.08);
+}
+
 body,
 html,
 #root {
-    background: #fff !important;
-    color: #111 !important;
+    background: var(--rsu-bg) !important;
+    color: var(--rsu-text) !important;
 }
 
 .app-shell,
@@ -18,28 +31,28 @@ html,
 .toggle-pill.active,
 .status-chip,
 .map-info-box {
-    background: #fff !important;
-    color: #111 !important;
-    border-color: #bbb !important;
+    background: var(--rsu-card) !important;
+    color: var(--rsu-text) !important;
+    border-color: var(--rsu-border) !important;
 }
 
 .hero .primary,
 .toggle-pill.active {
-    background: #111 !important;
+    background: var(--rsu-blue) !important;
     color: #fff !important;
-    border-color: #111 !important;
+    border-color: var(--rsu-blue) !important;
 }
 
 .location-card:hover,
 .location-card.active {
-    border-color: #111 !important;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10) !important;
+    border-color: var(--rsu-blue) !important;
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.10) !important;
 }
 
 .update-badge,
 .status-chip {
-    background: #eee !important;
-    color: #111 !important;
+    background: var(--rsu-bg) !important;
+    color: var(--rsu-blue) !important;
 }
 
 .panel-top p,
@@ -50,18 +63,18 @@ html,
 .map-hint,
 .update-meta,
 .location-count {
-    color: #444 !important;
+    color: var(--rsu-muted) !important;
 }
 
 .map-view,
 .preview-image img {
-    filter: grayscale(1) contrast(1.1) !important;
+    filter: grayscale(0.1) contrast(1.05) !important;
 }
 
 :root {
-    color-scheme: dark;
-    color: #111;
-    background: #f7f8fc;
+    color-scheme: light;
+    color: var(--rsu-blue);
+    background: var(--rsu-bg);
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -112,10 +125,16 @@ select {
     padding: 14px 22px;
     border-radius: 999px;
     border: none;
-    background: #1a73e8;
+    background: var(--rsu-blue);
     color: white;
     cursor: pointer;
     font-weight: 600;
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.10);
+    transition: background 0.2s;
+}
+
+.hero .primary:hover {
+    background: var(--rsu-blue-dark);
 }
 
 .layout {
@@ -152,12 +171,69 @@ select {
 
 .toggle-button {
     border: none;
-    background: #eef2ff;
-    color: #1d4ed8;
+    background: var(--rsu-bg);
+    color: var(--rsu-blue);
     padding: 12px 18px;
     border-radius: 999px;
     cursor: pointer;
     font-weight: 700;
+    transition: background 0.2s, color 0.2s;
+}
+
+.toggle-button:hover {
+    background: var(--rsu-blue-light);
+    color: #fff;
+}
+
+.floating-map-btn {
+    box-shadow: 0 8px 32px rgba(29, 78, 216, 0.18);
+    background: var(--rsu-blue);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 3000;
+}
+
+.floating-map-btn:hover {
+    background: var(--rsu-blue-dark);
+}
+
+.map-modal-overlay {
+    background: rgba(0, 0, 0, 0.35);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-modal-content {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.12);
+    min-width: 900px;
+    min-height: 600px;
+    max-width: 95vw;
+    max-height: 90vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
 }
 
 .update-grid {
