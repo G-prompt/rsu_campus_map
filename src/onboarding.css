@@ -1,0 +1,121 @@
+.onboarding-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.18);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    /* Safari/iOS support */
+    animation: fadeIn 0.4s;
+}
+
+.onboarding-modal-card {
+    background: var(--rsu-white);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(2, 11, 91, 0.20), 0 1.5px 6px rgba(2, 11, 91, 0.10);
+    padding: 40px 32px 32px 32px;
+    min-width: 340px;
+    max-width: 95vw;
+    animation: scaleIn 0.35s cubic-bezier(.4, 1.6, .6, 1);
+    transition: box-shadow 0.2s;
+    border: 1.5px solid var(--rsu-navy);
+}
+
+.onboarding-form h2 {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+    color: var(--rsu-navy);
+}
+
+.onboarding-form .subtitle {
+    font-size: 1.1rem;
+    color: var(--rsu-muted);
+    margin-bottom: 1.5em;
+    font-weight: 400;
+}
+
+.onboarding-form label {
+    display: block;
+    margin-bottom: 1.2em;
+    font-weight: 600;
+    color: var(--rsu-navy);
+}
+
+.onboarding-form select {
+    width: 100%;
+    margin-top: 0.4em;
+    padding: 0.7em 1em;
+    border-radius: 12px;
+    border: 1.5px solid var(--rsu-navy);
+    background: var(--rsu-white);
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.onboarding-form select:focus {
+    border: 1.5px solid var(--rsu-navy);
+}
+
+.onboarding-cta {
+    width: 100%;
+    margin-top: 1.2em;
+    padding: 0.9em 0;
+    background: var(--rsu-navy);
+    color: var(--rsu-white);
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(2, 11, 91, 0.10);
+    transition: background 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.onboarding-cta:hover {
+    background: var(--rsu-navy-dark);
+    box-shadow: 0 4px 16px rgba(2, 11, 91, 0.20);
+}
+
+.onboarding-cta::after {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 40%;
+    margin: 0.5em auto 0 auto;
+    background: linear-gradient(90deg, var(--rsu-gold) 0%, var(--rsu-navy) 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(212, 160, 23, 0.50);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.92);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
